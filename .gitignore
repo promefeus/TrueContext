@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual env
+venv/
+.env/
+
+# Data
+data/uploaded_docs/
+data/faiss_store/
+
+# OS
+.DS_Store
