@@ -1,5 +1,15 @@
 import os
 import streamlit as st
+from ingestion.chunker import chunk_documents
+from embeddings.embedder import Embedder
+from vectorstore.faiss_index import FaissIndex
+
+
+@st.cache_resource
+def load_embedder():
+    return Embedder()
+
+embedder = load_embedder()
 
 UPLOAD_DIR = "data/uploaded_docs"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -39,4 +49,44 @@ if uploaded_files:
     for d in all_documents[:5]:
         st.write(f"Source: {d['source']} | Page: {d['page']}")
         st.write(d["text"][:300])
+        st.markdown("---")
+
+
+        chunks = chunk_documents(all_documents)
+
+        st.write(f"Total chunks created: {len(chunks)}")
+
+        st.write("Chunk preview:")
+        for c in chunks[:3]:
+            st.write(f"Chunk {c['chunk_id']} | Source: {c['source']} | Page: {c['page']}")
+            st.write(c["text"][:300])
+            st.markdown("---")
+
+
+    embedder = Embedder()
+
+    chunk_texts = [c["text"] for c in chunks]
+    embeddings = embedder.embed_texts(chunk_texts)
+
+    st.write(f"Generated embeddings for {len(embeddings)} chunks")
+    st.write("Embedding vector length:", len(embeddings[0]))
+
+
+    embedding_dim = len(embeddings[0])
+    faiss_index = FaissIndex(embedding_dim)
+    faiss_index.add_embeddings(embeddings)
+
+    st.success("FAISS index built successfully")
+
+query = st.text_input("Test semantic search (no LLM yet)")
+
+if query:
+    query_embedding = embedder.embed_texts([query])[0]
+    distances, indices = faiss_index.search(query_embedding, top_k=5)
+
+    st.write("Top matching chunks:")
+    for idx, dist in zip(indices, distances):
+        chunk = chunks[idx]
+        st.write(f"Source: {chunk['source']} | Page: {chunk['page']} | Distance: {dist:.4f}")
+        st.write(chunk["text"][:300])
         st.markdown("---")
