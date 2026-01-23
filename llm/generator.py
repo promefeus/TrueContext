@@ -53,15 +53,14 @@ def build_prompt(context_chunks, question, is_fallback=False):
     
     INSTRUCTIONS:
     1. Answer the user's question using the Context provided below.
-    2. Structure your answer as follows:
-       - **Summary**: A 2-3 sentence direct answer.
-       - **Key Details**: Bullet points extracting specific facts from the text.
-       - **Explanation**: A simple explanation of the concept (if applicable).
-    3. If the answer is not in the text, say so clearly. Do not hallucinate.
-    4. If multiple interpretations exist, list them clearly.
+    2. **Format your response exactly as follows**:
+       - **Paragraph 1:** Start directly with a 2-3 sentence summary or direct answer. **Do NOT use a header like "Summary:".**
+       - **Key Details:** Leave a blank line, then write "Key Details:" followed by bullet points extracting specific facts.
+       - **Paragraph 2:** Leave a blank line, then end with a explanation or context paragraph, if detailed answer asked provide detailed explanation. **Do NOT use a header like "Explanation:".**
+    3. If the answer is not in the text, say so clearly. Do not hallucinate. 
+    4. If a detailed answer is explicitly requested, provide it.
     5. If examples are relevant, provide them.
-    6. If a detailed answer is explicitly requested, provide it.
-
+    6. If multiple interpretations exist, list them clearly.
     ---------------------
     CONTEXT:
     {context_text}
