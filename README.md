@@ -1,4 +1,4 @@
-# TrueContext- Chat with your documents
+## TrueContext- Chat with your documents
 
 **TrueContext** is a privacy-first, retrieval-augmented generation (RAG) system designed to facilitate accurate, hallucination-free interactions with user-uploaded documents. Unlike standard chatbots, TrueContext enforces strict grounding by prioritizing document content and employing advanced fallback mechanisms when specific context is missing.
 
